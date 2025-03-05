@@ -16,6 +16,92 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  /* background: var(--background); */
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.swirl-background {
+  pointer-events: none;
+}
+
+.cyberpunk-btn {
+  position: relative;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  color: #fff;
+  background-color: transparent;
+  border: 2px solid #ff00ff; /* Neon pink border */
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+/* Glow effect using a pseudo-element */
+.cyberpunk-btn::before {
+  content: "";
+  position: absolute;
+  top: -0.25rem;
+  left: -0.25rem;
+  right: -0.25rem;
+  bottom: -0.25rem;
+  background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+  z-index: -1;
+  filter: blur(8px);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+/* Optional: a subtle inner glow */
+.cyberpunk-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: -1;
+}
+
+/* Hover state: intensify the glow and scale up */
+.cyberpunk-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+}
+
+.cyberpunk-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+}
+
+/* Neon border for the flexible middle rectangle */
+.border-neon {
+  border-color: #ff00ff;
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.5), 0 0 16px rgba(0, 255, 255, 0.5);
+}
+
+/* If you have a cyberpunk-border for the right column, that's fine to keep. */
+/* Example: */
+.cyberpunk-border {
+  border: 2px solid #ff00ff;
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.5), 0 0 16px rgba(0, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.cyberpunk-border:hover {
+  box-shadow: 0 0 12px rgba(255, 0, 255, 0.8), 0 0 24px rgba(0, 255, 255, 0.8);
+}
+
+.clip-path-cyberpunk {
+  clip-path: polygon(0% 10%, 10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%);
+}
+
+.clip-path-cyberpunk-offset {
+  clip-path: polygon(1% 11%, 11% 1%, 89% 1%, 99% 11%, 99% 89%, 89% 99%, 11% 99%, 1% 89%);
 }
