@@ -1,24 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 const links = [
   { href: "/ui-ux", label: "Development & UI/UX" },
-  // { href: "/photography", label: "Photography" },
   { href: "/about", label: "About" },
 ];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
   }, [menuOpen]);
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const handleNavigation = (url: string) => {
+    setMenuOpen(false);
+    router.push(url);
+  };
 
   return (
     <div className="navbar min-h-12 fixed top-0 left-0 right-0 z-50 bg-teal-500/20 backdrop-blur-md rounded-b-[30px] shadow-lg">
@@ -43,7 +49,7 @@ export default function Header() {
         <ul className="hidden md:flex menu menu-horizontal p-0 space-x-4 text-sm">
           {links.map(({ href, label }) => (
             <li key={href}>
-              <Link href={href}>{label}</Link>
+              <button onClick={() => handleNavigation(href)}>{label}</button>
             </li>
           ))}
         </ul>
@@ -51,20 +57,22 @@ export default function Header() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-md z-40 transition-opacity duration-300 ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        className={`fixed inset-0 bg-black/50 backdrop-blur-md z-40 transition-opacity duration-300 ${
+          menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
         onClick={() => setMenuOpen(false)}
       ></div>
 
       {/* Mobile Menu Drawer */}
       <nav
-        className={`fixed top-0 right-0 min-h-screen w-64 bg-teal-700 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out rounded-l-2xl z-40 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 min-h-screen w-64 bg-teal-700 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out rounded-l-2xl z-40 ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <ul className="menu p-6 pt-20 space-y-6 text-lg">
           {[{ href: "/", label: "Home" }, ...links].map(({ href, label }) => (
             <li key={href}>
-              <Link href={href} onClick={() => setMenuOpen(false)}>
-                {label}
-              </Link>
+              <button onClick={() => handleNavigation(href)}>{label}</button>
             </li>
           ))}
         </ul>
