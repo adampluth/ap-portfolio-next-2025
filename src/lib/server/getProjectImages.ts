@@ -1,8 +1,8 @@
-"use server"; // ✅ Ensure this runs on the server
+"use server";
 
 import fs from "fs";
 import path from "path";
-import { cache } from "react"; // Optimizes repeated calls
+import { cache } from "react";
 
 // Map slugs to actual folder names
 const projectFolderMap: Record<string, string> = {
@@ -16,7 +16,7 @@ const projectFolderMap: Record<string, string> = {
   "aux-sable": "auxsable",
 };
 
-// ✅ Server Function to Get Images (Now in a Dedicated Server File)
+// Server Function to Get Images (Now in a Dedicated Server File)
 export const getProjectImages = cache(async (slug: string): Promise<string[]> => {
   const folderName = projectFolderMap[slug];
   if (!folderName) {
@@ -26,7 +26,7 @@ export const getProjectImages = cache(async (slug: string): Promise<string[]> =>
 
   const projectPath = path.join(process.cwd(), "public/img", folderName);
 
-  // ✅ Check if the directory exists before reading it
+  // Check if the directory exists before reading it
   if (!fs.existsSync(projectPath)) {
     console.warn(`Warning: Image directory does not exist for ${slug} (${folderName})`);
     return [];
@@ -35,9 +35,9 @@ export const getProjectImages = cache(async (slug: string): Promise<string[]> =>
   try {
     const files = fs.readdirSync(projectPath);
 
-    // ✅ Filter out thumbnail files
+    // Filter out thumbnail files
     return files
-      .filter((file) => !file.match(/(_t\.png|_t\.jpg|-t\.png|-t\.jpg)$/i)) // Exclude thumbnails
+      .filter((file) => !file.match(/(_t\.png|_t\.jpg|-t\.png|-t\.jpg|\.DS_Store)$/i)) // Exclude thumbnails
       .map((file) => `/img/${folderName}/${file}`);
   } catch (error) {
     console.error("Error reading images:", error);

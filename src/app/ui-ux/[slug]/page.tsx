@@ -1,15 +1,15 @@
-import { getProjectImages } from "@/lib/server/getProjectImages"; // ✅ Server function
+import { getProjectImages } from "@/lib/server/getProjectImages";
 import { projectMetadata } from "@/lib/projects";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ImageGallery from "@/components/ImageGallery"; // ✅ Client Component
+import ImageGallery from "@/components/ImageGallery";
 
 interface ProjectPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>; // ✅ Make params a Promise
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const { slug } = params;
+  const { slug } = await params; // ✅ Await params before using slug
 
   const project = projectMetadata[slug as keyof typeof projectMetadata];
   if (!project) return notFound(); // Show 404 if project is not found
