@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       
       {/* Ensure main does not block background */}
-      <main className="relative mt-16 p-10 bg-transparent" style={{ backfaceVisibility: "hidden" }}>
+      <main className="relative p-10 bg-transparent" style={{ backfaceVisibility: "hidden" }}>
         {children}
       </main>
     </div>

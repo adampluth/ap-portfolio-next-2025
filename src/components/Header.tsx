@@ -1,12 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [menuOpen]);
+
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
 
   return (
     <div className="navbar min-h-12 fixed top-0 left-0 right-0 z-50 bg-teal-500/20 backdrop-blur-md rounded-b-[30px] shadow-lg">
@@ -27,8 +39,8 @@ export default function Header() {
 
         {/* Mobile Menu Button */}
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="btn btn-round w-10 p-1 btn-sm md:hidden bg-teal-500/40 hover:bg-white/30 transition-all rounded-tl-3xl rounded-tr-xl rounded-br-3xl rounded-bl-xl border-none"
+          onClick={toggleMenu}
+          className="absolute top- right-2 px-2 btn-sm md:hidden bg-cyan-600/60 hover:bg-white/30 transition-all rounded-tl-3xl rounded-tr-xl rounded-br-3xl rounded-bl-xl border-none z-[100]"
         >
           {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -49,7 +61,7 @@ export default function Header() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-md z-40 transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 bg-black/50 backdrop-blur-md z-40 transition-opacity duration-300 ${
           menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setMenuOpen(false)}
@@ -57,11 +69,11 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       <nav
-        className={`fixed top-[3.5rem] right-0 h-full w-64 bg-white/20 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out rounded-l-2xl ${
+        className={`fixed top-0 right-0 min-h-screen w-64 bg-teal-700 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out rounded-l-2xl z-40 ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <ul className="menu p-6 space-y-4 text-lg">
+        <ul className="menu p-6 pt-20 space-y-6 text-lg">
           <li>
             <Link href="/" onClick={() => setMenuOpen(false)}>
               Home
