@@ -9,12 +9,14 @@ interface GalleryItem {
 }
 
 const galleryData: GalleryItem[] = [
-  { src: '/images/image1.jpg', label: 'Cyberpunk City' },
-  { src: '/images/image2.jpg', label: 'Neon Streets' },
-  { src: '/images/image3.jpg', label: 'Tech Haven' },
-  { src: '/images/image4.jpg', label: 'AI Core' },
-  { src: '/images/image5.jpg', label: 'Hacker Hub' },
-  { src: '/images/image6.jpg', label: 'Futuristic Market' },
+  { src: '/images/image4.jpg', label: 'Solvent Extraction Experiment Digital Twin' },
+  { src: '/img/inl-magnet-dt/MAGNET_LDRD_Prototype_01_UI_t.png', label: 'MAGNET Autonomous Heat Pipe Control Digital Twin' },
+  { src: '/img/inl-nnsa-dt/NNSA-digitaltwin-1-t.png', label: 'Nuclear Reactor Non-proliferation Digital Twin' },
+  { src: '/images/image2.jpg', label: 'SANS New Website' },
+  { src: '/img/sans-cybertalent/SANS_CyberTalentRedesign_t.png', label: 'SANS CyberTalent' },
+  { src: '/img/rah-web/RAH_WebsiteRefresh_01_Home_t.jpg', label: 'Richmond American Homes Website' },
+  { src: '/img/rah-ts/RAH_TS3_00_MainDash_t.jpg', label: 'Sales Center Touchscreen Kiosks' },
+  { src: '/img/auxsable/AuxSable_01_Main_t.jpg', label: 'Aux Sable Creek Farms' },
 ];
 
 const ThumbGallery: React.FC = () => {
@@ -22,7 +24,7 @@ const ThumbGallery: React.FC = () => {
 
   return (
     <div
-      className="grid grid-cols-1 sm:grid-cols- md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-4xl mx-auto p-4"
+      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-4xl mx-auto p-4"
       onMouseLeave={() => setHoveredIndex(null)}
     >
       {galleryData.map((item, index) => (
@@ -33,11 +35,9 @@ const ThumbGallery: React.FC = () => {
           }`}
           onMouseEnter={() => setHoveredIndex(index)}
         >
-          {/* Outer border shape */}
-          <div className="absolute inset-0 bg-yellow-300 clip-path-cyberpunk"></div>
 
           {/* Inner border shape (Offset) */}
-          <div className="relative clip-path-cyberpunk-offset bg-black">
+          <div className="card bg-black">
             <Image
               src={item.src}
               alt={item.label}
