@@ -31,7 +31,7 @@ const galleryData: GalleryItem[] = [
     slug: "nuclear-reactor-digital-twin"
   },
   { 
-    src: '/img/sans-website/SANS-website-1.png',
+    src: '/img/sans-website/SANS-website-t.png',
     company: 'Sans Institute',
     label: 'Corporate Website',
     slug: "sans-corporate-website"
