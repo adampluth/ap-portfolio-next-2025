@@ -1,16 +1,21 @@
-import { getProjectImages } from "@/lib/getProjectImages";
+import { getProjectImages } from "@/lib/server/getProjectImages"; // ✅ Server function
 import { projectMetadata } from "@/lib/projects";
-import NextImage from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import ImageGallery from "@/components/ImageGallery"; // ✅ Client Component
 
-export default async function ProjectPage({ params }: { params: { slug: string } }) {
+interface ProjectPageProps {
+  params: { slug: string };
+}
+
+export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = params;
-  const project = projectMetadata[slug as keyof typeof projectMetadata]; // Fetch metadata
 
-  if (!project) return notFound(); // Show 404 if project is not in metadata
+  const project = projectMetadata[slug as keyof typeof projectMetadata];
+  if (!project) return notFound(); // Show 404 if project is not found
 
-  const images = await getProjectImages(slug); // Dynamically fetch images
+  // ✅ Fetch images on the server
+  const images = await getProjectImages(slug);
 
   return (
     <div className="max-w-5xl mx-auto p-6">
@@ -28,32 +33,8 @@ export default async function ProjectPage({ params }: { params: { slug: string }
         <p className="mt-2 text-gray-300">{project.description}</p>
       </div>
 
-      {/* Main Featured Image */}
-      {images.length > 0 && (
-        <div className="mb-6 max-h-[800px] overflow-hidden rounded-lg shadow-lg">
-          <NextImage 
-            src={images[0]} 
-            alt={project.title} 
-            width={800} 
-            height={500} 
-            className="w-full"
-          />
-        </div>
-      )}
-
-      {/* Additional Images */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {images.slice(1).map((img, index) => (
-          <NextImage
-            key={index}
-            src={img}
-            alt={`${project.title} screenshot ${index + 1}`}
-            width={300}
-            height={200}
-            className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-105"
-          />
-        ))}
-      </div>
+      {/* ✅ Pass Images to Client Component */}
+      <ImageGallery images={images} title={project.title} />
     </div>
   );
 }
