@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: #171717;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  /* background: var(--background); */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+canvas {
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+h1, h2, h3, p, span {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
 @layer utilities {
   @variants responsive {
     .masonry {
@@ -22,26 +56,57 @@
   }
 }
 
-:root {
-  --background: #171717;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  /* background: var(--background); */
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 .swirl-background {
   pointer-events: none;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes auroraMove {
+  0% { background-position: 0% 50%; opacity: 0.6; }
+  50% { background-position: 100% 50%; opacity: 0.9; }
+  100% { background-position: 0% 50%; opacity: 0.6; }
+}
+
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(16, 185, 129, 0.8) 20%, rgba(99, 102, 241, 0.8) 50%, rgba(236, 72, 153, 0.8) 80%);
+  background-size: 400% 400%;
+  mix-blend-mode: screen;
+  animation: auroraMove 10s ease-in-out infinite;
+  opacity: 0.9;
+  filter: blur(60px) brightness(130%) contrast(120%);
+  pointer-events: none; /*  Prevents affecting other elements */
+}
+
+
+.animate-gradient-move {
+  animation: gradientMove 10s ease infinite;
+}
+
+.bg-radial-gradient {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, rgba(0, 0, 0, 0) 70%);
+}
+
+.fps-warning {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  opacity: 0.9;
+  transition: opacity 0.5s ease-in-out;
+  backdrop-filter: none !important; /*  Prevents blur inheritance */
+  filter: none !important; /*  Ensure no blur is applied */
+  mix-blend-mode: normal; /*  Stops background effects from interfering */
 }
 
 .cyberpunk-btn {

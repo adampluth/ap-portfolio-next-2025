@@ -27,7 +27,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
   return (
     <div className="relative">
-      {/* ✅ Page Transition Effect with a Cyberpunk Gradient */}
+      {/* Page Transition Effect with a Cyberpunk Gradient */}
       <AnimatePresence mode="wait">
         {isTransitioning && (
           <motion.div
@@ -39,12 +39,12 @@ export default function PageTransition({ children }: { children: React.ReactNode
         )}
       </AnimatePresence>
 
-      {/* ✅ Persistent Background AFTER Transition Completes */}
+      {/* Persistent Background AFTER Transition Completes */}
       {backgroundActive && (
         <div className="fixed inset-0 z-10 bg-gradient-to-tr from-[#0f172a] via-[#7b2cbf] to-[#21d4fd]" />
       )}
 
-      {/* ✅ Ensure Page Content is Visible After Transition */}
+      {/* Ensure Page Content is Visible After Transition */}
       <div className={`relative z-20 transition-opacity duration-500 ${isTransitioning ? "opacity-0" : "opacity-100"}`}>
         {children}
       </div>

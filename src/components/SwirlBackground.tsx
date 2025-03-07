@@ -1,67 +1,97 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createNoise3D } from "simplex-noise";
 
-const BACKGROUND_COLOR = "hsla(220, 100%, 5%, 1)";
-const CYBERPUNK_COLORS = [180, 290]; // ✅ Teal & Purple only
-const PARTICLE_COUNT = 500; // ✅ Optimized density
+const BACKGROUND_COLOR = "hsla(230, 60%, 8%, 1)"; 
+const CYBERPUNK_COLORS = [180, 290]; 
+const PARTICLE_COUNT = 600; 
 const PARTICLE_PROP_COUNT = 9;
 const PARTICLE_PROPS_LENGTH = PARTICLE_COUNT * PARTICLE_PROP_COUNT;
-const NOISE_STEPS = 8;
-const GRAIN_DENSITY = 10000; // ✅ Strong grain effect without overloading CPU
-const GRAIN_SIZE = 2;
-const GRAIN_TEXTURES_COUNT = 5; // ✅ Number of pre-generated grain textures
-const FRAME_RATE_LIMIT = 45; // ✅ Less CPU/GPU load
+const NOISE_STEPS = 10;
 
 export default function SwirlBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particleProps = useRef(new Float32Array(PARTICLE_PROPS_LENGTH));
-  const grainTextures = useRef<HTMLCanvasElement[]>([]);
-  const currentGrainTextureIndex = useRef(0); // ✅ Fix: Store index in useRef
+  const noise3D = createNoise3D();
+  const tickRef = useRef(0);
+
+  const [disableParticles, setDisableParticles] = useState(false);
+  const [showFPSWarning, setShowFPSWarning] = useState(false);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    /** Performance Check - Less Aggressive */
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 3) {
+      console.warn("Low CPU cores detected, disabling SwirlBackground.");
+      setDisableParticles(true);
+      setShowFPSWarning(true);
+      setTimeout(() => setShowFPSWarning(false), 5000);
+      return;
+    }
+
+    let frameCount = 0;
+    const startTime = performance.now();
+    let lowFpsCount = 0;
+    let stopCheck = false;
+
+    const fpsCheck = () => {
+      if (stopCheck) return;
+      frameCount++;
+      requestAnimationFrame(fpsCheck);
+    };
+
+    const checkFPS = () => {
+      const elapsed = performance.now() - startTime;
+      const fps = (frameCount / elapsed) * 1000;
+
+      if (fps < 15) {
+        lowFpsCount++;
+      } else if (fps > 20) {
+        lowFpsCount = 0; // Reset if FPS recovers
+      }
+
+      if (lowFpsCount >= 4) { // Require 8 seconds of low FPS before disabling
+        console.warn("Consistently low FPS detected, disabling SwirlBackground.");
+        setDisableParticles(true);
+        setShowFPSWarning(true);
+        setTimeout(() => setShowFPSWarning(false), 5000);
+        stopCheck = true;
+      } else {
+        setTimeout(checkFPS, 2000); // Check every 2 seconds
+      }
+    };
+
+    setTimeout(checkFPS, 8000); // Start checking after 8 seconds to avoid false positives
+    fpsCheck();
+
+    return () => { stopCheck = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!canvasRef.current || disableParticles) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let tick = 0;
-    const noise3D = createNoise3D();
-    let lastRenderTime = 0;
-
-    // ✅ Define `generateGrainTextures` BEFORE `resize`
-    const generateGrainTextures = () => {
-      grainTextures.current = [];
-      for (let i = 0; i < GRAIN_TEXTURES_COUNT; i++) {
-        const grainCanvas = document.createElement("canvas");
-        grainCanvas.width = window.innerWidth;
-        grainCanvas.height = window.innerHeight;
-        const grainCtx = grainCanvas.getContext("2d");
-        generateGrainTexture(grainCtx, grainCanvas);
-        grainTextures.current.push(grainCanvas);
-      }
-    };
-
-    const generateGrainTexture = (grainCtx: CanvasRenderingContext2D | null, grainCanvas: HTMLCanvasElement) => {
-      if (!grainCtx) return;
-      grainCtx.clearRect(0, 0, grainCanvas.width, grainCanvas.height);
-      grainCtx.fillStyle = "rgba(255, 255, 255, 0.03)";
-      for (let i = 0; i < GRAIN_DENSITY; i++) {
-        const x = Math.random() * grainCanvas.width;
-        const y = Math.random() * grainCanvas.height;
-        grainCtx.fillRect(x, y, GRAIN_SIZE, GRAIN_SIZE);
-      }
-    };
-
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      generateGrainTextures();
+      initParticles();
     };
 
-    window.addEventListener("resize", resize);
-    resize();
+    const initParticle = (i: number) => {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const vx = 0;
+      const vy = 0;
+      const life = 0;
+      const ttl = 60 + Math.random() * 120;
+      const speed = 0.5 + Math.random() * 3;
+      const radius = 1.5 + Math.random() * 2;
+      const hue = CYBERPUNK_COLORS[Math.floor(Math.random() * CYBERPUNK_COLORS.length)];
+
+      particleProps.current.set([x, y, vx, vy, life, ttl, speed, radius, hue], i);
+    };
 
     const initParticles = () => {
       for (let i = 0; i < PARTICLE_PROPS_LENGTH; i += PARTICLE_PROP_COUNT) {
@@ -69,19 +99,10 @@ export default function SwirlBackground() {
       }
     };
 
-    const initParticle = (i: number) => {
-      const x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
-      const y = Math.random() * canvas.height * 0.8 + canvas.height * 0.1;
-      const vx = 0;
-      const vy = 0;
-      const life = 0;
-      const ttl = 50 + Math.random() * 150;
-      const speed = 0.1 + Math.random() * 2;
-      const radius = 1 + Math.random() * 3;
-      const hue = CYBERPUNK_COLORS[Math.floor(Math.random() * CYBERPUNK_COLORS.length)];
+    window.addEventListener("resize", resize);
+    resize();
 
-      particleProps.current.set([x, y, vx, vy, life, ttl, speed, radius, hue], i);
-    };
+    let animationFrameId: number;
 
     const drawParticles = () => {
       for (let i = 0; i < PARTICLE_PROPS_LENGTH; i += PARTICLE_PROP_COUNT) {
@@ -94,9 +115,11 @@ export default function SwirlBackground() {
 
       const x = particleProps.current[i];
       const y = particleProps.current[i2];
-      const noiseValue = noise3D(x * 0.00125, y * 0.00125, tick * 0.0005) * NOISE_STEPS;
-      const vx = lerp(particleProps.current[i3], Math.cos(noiseValue), 0.5);
-      const vy = lerp(particleProps.current[i4], Math.sin(noiseValue), 0.5);
+
+      // **Less Frequent Noise Calculation Calls**
+      const noiseFactor = tickRef.current % 3 === 0 ? noise3D(x * 0.0015, y * 0.0015, tickRef.current * 0.0004) * NOISE_STEPS : 0;
+      const vx = Math.cos(noiseFactor) * 0.5 + particleProps.current[i3] * 0.5;
+      const vy = Math.sin(noiseFactor) * 0.5 + particleProps.current[i4] * 0.5;
 
       const life = particleProps.current[i5];
       const ttl = particleProps.current[i6];
@@ -106,7 +129,7 @@ export default function SwirlBackground() {
       const radius = particleProps.current[i8];
       const hue = particleProps.current[i9];
 
-      drawParticle(x, y, x2, y2, life, ttl, radius, hue);
+      drawParticle(ctx, x, y, x2, y2, life, ttl, radius, hue);
 
       particleProps.current[i] = x2;
       particleProps.current[i2] = y2;
@@ -119,54 +142,73 @@ export default function SwirlBackground() {
       }
     };
 
-    const drawParticle = (x: number, y: number, x2: number, y2: number, life: number, ttl: number, radius: number, hue: number) => {
-      ctx.save();
-      ctx.lineCap = "round";
-      ctx.lineWidth = radius;
-      ctx.strokeStyle = `hsla(${hue}, 100%, 80%, ${fadeInOut(life, ttl)})`;
-      ctx.shadowBlur = radius * 4;
-      ctx.shadowColor = `hsla(${hue}, 100%, 70%, 0.7)`;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
-      ctx.closePath();
-      ctx.restore();
-    };
-
-    const fadeInOut = (t: number, m: number) => {
-      const halfM = 0.5 * m;
-      return Math.abs(((t + halfM) % m) - halfM) / halfM;
-    };
-
-    const draw = (timestamp: number) => {
-      if (timestamp - lastRenderTime < 1000 / FRAME_RATE_LIMIT) {
-        requestAnimationFrame(draw);
-        return;
-      }
-      lastRenderTime = timestamp;
-
-      tick++;
+    const draw = () => {
+      tickRef.current++;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = BACKGROUND_COLOR;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // ✅ Alternate between the 5 pre-rendered grain textures
-      currentGrainTextureIndex.current = (currentGrainTextureIndex.current + 1) % GRAIN_TEXTURES_COUNT;
-      ctx.drawImage(grainTextures.current[currentGrainTextureIndex.current], 0, 0);
-
       drawParticles();
-      requestAnimationFrame(draw);
+      animationFrameId = requestAnimationFrame(draw);
     };
 
-    generateGrainTextures();
     initParticles();
-    draw(0);
+    draw();
 
-    return () => window.removeEventListener("resize", resize);
-  }, []);
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [disableParticles, noise3D]);
 
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none" />;
+  return (
+    <>
+      {!disableParticles && (
+        <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none"></canvas>
+      )}
+
+
+      {/* Moving Aurora Background */}
+      <div className="aurora-bg"></div>
+      
+      {/* Layered Radial Glow for Depth */}
+      <div className="fixed inset-0 bg-radial-gradient mix-blend-overlay opacity-50"></div>
+
+      {/* FPS Warning Message */}
+      {showFPSWarning && (
+        <div className="fps-warning">
+          FPS too low. Disabling particles...
+        </div>
+      )}
+    </>
+  );
 }
 
-const lerp = (n1: number, n2: number, speed: number) => (1 - speed) * n1 + speed * n2;
+const drawParticle = (
+  ctx: CanvasRenderingContext2D, 
+  x: number, 
+  y: number, 
+  x2: number, 
+  y2: number, 
+  life: number, 
+  ttl: number, 
+  radius: number, 
+  hue: number
+) => {
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.lineWidth = radius;
+  ctx.strokeStyle = `hsla(${hue}, 100%, 80%, ${fadeInOut(life, ttl)})`;
+  ctx.shadowBlur = radius * 4;
+  ctx.shadowColor = `hsla(${hue}, 100%, 70%, 0.5)`;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.closePath();
+  ctx.restore();
+};
+
+const fadeInOut = (t: number, m: number) => {
+  const halfM = 0.5 * m;
+  return Math.abs(((t + halfM) % m) - halfM) / halfM;
+};

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ChevronLeft } from "lucide-react"; // ✅ Import Lucide Icons
+import { ChevronLeft } from "lucide-react";
 import ProjectImageGallery from "@/components/ProjectImageGallery";
 
 interface ProjectUIProps {
@@ -12,8 +12,8 @@ interface ProjectUIProps {
 
 export default function ProjectUI({ project, images }: ProjectUIProps) {
   return (
-    <div className="max-w-8xl mx-auto p-6 -mt-10">
-      {/* ✅ Back Button - Icon on Mobile, Full Button on Desktop */}
+    <div className="max-w-8xl mx-auto overflow-hidden">
+      {/* Back Button - Icon on Mobile, Full Button on Desktop */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }} 
         animate={{ opacity: 1, scale: 1 }} 
@@ -42,20 +42,20 @@ export default function ProjectUI({ project, images }: ProjectUIProps) {
         className="grid grid-cols-1 lg:grid-cols-4 gap-6"
       >
         {/* Project Details (Left Column - Sticky only on md and above) */}
-        <div className="md:col-span-1 md:sticky md:top-28 self-start text-center space-y-4">
+        <div className="md:col-span-1 md:sticky md:top-28 self-start text-center space-y-4 pl-6">
           
           {/* Motion-Animated Title */}
           <motion.h1
-            initial={{ opacity: 0.8, scale: 0.95 }}
+            initial={{ opacity: 0.8, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, repeat: Infinity, direction: "alternate" }}
+            transition={{ duration: 2, repeat: Infinity, direction: "alternate" }}
             className="relative text-5xl lg:text-4xl xl:text-5xl font-extrabold text-white text-center mt-20 md:mt-10"
           >
             {/* Diffused Glow Background */}
             <span className="absolute -inset-4 scale-125 blur-3xl opacity-50 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400"></span>
 
             {/* Main Gradient Text */}
-            <span className="relative bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(255,105,180,0.7)]">
+            <span className="relative bg-gradient-to-r from-purple-400 via-pink-300 to-cyan-200  bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(255,105,180,0.7)]">
               {project.title}
             </span>
           </motion.h1>
@@ -65,7 +65,7 @@ export default function ProjectUI({ project, images }: ProjectUIProps) {
         </div>
 
         {/* Image Gallery (Right Column - Scrolls) */}
-        <div className="md:col-span-3 overflow-auto max-h-[100vh] md:pt-20 pb-14">
+        <div className="md:col-span-3 overflow-auto max-h-[100vh] md:pt-20 pb-14 p-6">
           <ProjectImageGallery images={images} title={project.title} />
         </div>
       </motion.div>
