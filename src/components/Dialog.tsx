@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { ReactNode } from "react";
+import { useEffect, ReactNode } from "react";
 import { X } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DialogProps {
   title: string;
@@ -15,40 +14,84 @@ interface DialogProps {
 export default function Dialog({ title, isOpen, onClose, children }: DialogProps) {
   // Prevent background scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"; // Disable scrolling
-    } else {
-      document.body.style.overflow = ""; // Re-enable scrolling
-    }
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
 
     return () => {
-      document.body.style.overflow = ""; // Cleanup on unmount
+      document.body.style.overflow = "auto";
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }} 
-        animate={{ opacity: 1, scale: 1 }} 
-        exit={{ opacity: 0, scale: 0.95 }} 
-        className="bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-3xl w-full overflow-hidden"
-      >
-        {/* Header with Fixed Title and Close Button */}
-        <div className="flex justify-between items-center px-6 py-4 border-b dark:border-gray-800">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <AnimatePresence>
+      {isOpen && (
+        <div
+          className="
+            fixed
+            inset-0
+            flex
+            items-center
+            justify-center
+            bg-black/60
+            backdrop-blur-md
+            z-50
+          "
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="
+              bg-gray-900/90
+              dark:bg-gray-900
+              border border-gray-700/60
+              shadow-xl
+              max-w-3xl
+              w-full
+              overflow-hidden
+              rounded-lg
+              backdrop-blur-xl
+            "
+          >
+            {/* Header with Title and Close Button */}
+            <div
+              className="
+                flex
+                justify-between
+                items-center
+                px-6
+                py-4
+                border-b
+                border-gray-800/60
+                bg-gradient-to-r
+                from-purple-500/30
+                via-pink-500/30
+                to-cyan-400/30
+                backdrop-blur-md
+              "
+            >
+              <h2 className="text-lg font-semibold text-white">{title}</h2>
+              <button
+                onClick={onClose}
+                className="
+                  p-2
+                  rounded-md
+                  text-white
+                  hover:bg-gray-800/50
+                  transition
+                "
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-        {/* Scrollable Content */}
-        <div className="max-h-[75vh] overflow-y-auto p-6">
-          {children}
+            {/* Scrollable Content */}
+            <div className="max-h-[75vh] overflow-y-auto p-6 text-gray-300">
+              {children}
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }
