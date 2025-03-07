@@ -36,7 +36,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
 
       {/* Masonry Layout for Additional Images */}
       <div className="masonry sm:masonry-sm md:masonry-md gap-y-2">
-        {images.slice(1).map((img, index) => (
+        {images.map((img, index) => (
           <div key={index} className="cursor-pointer mb-6" onClick={() => {
             setSelectedImage(img);
             setIsDialogOpen(true);
