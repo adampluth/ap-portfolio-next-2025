@@ -18,7 +18,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
       {/* Main Featured Image */}
       {images.length > 0 && (
         <div
-          className="mb-6 max-h-[800px] overflow-hidden rounded-lg shadow-lg cursor-pointer"
+          className="mb-6 max-h-[600px] overflow-hidden rounded-lg shadow-lg cursor-pointer"
           onClick={() => {
             setSelectedImage(images[0]);
             setIsDialogOpen(true);
