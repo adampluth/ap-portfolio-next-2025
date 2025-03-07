@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import SwirlBackground from "@/components/SwirlBackground";
+import PageTransition from "./PageTransition";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,12 +15,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SwirlBackground />
         </div>
       )}
-      
+
       <Header />
-      
-      {/* Ensure main does not block background */}
-      <main className="relative p-10 bg-transparent" style={{ backfaceVisibility: "hidden" }}>
-        {children}
+
+      <main className="relative flex flex-col p-10 bg-transparent z-20">
+        <PageTransition>{children}</PageTransition>
       </main>
     </div>
   );

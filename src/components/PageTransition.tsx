@@ -27,25 +27,25 @@ export default function PageTransition({ children }: { children: React.ReactNode
 
   return (
     <div className="relative">
-      {/* Page Transition Effect */}
+      {/* ✅ Page Transition Effect with a Cyberpunk Gradient */}
       <AnimatePresence mode="wait">
         {isTransitioning && (
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: "0%" }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 bg-black z-50"
+            className="fixed inset-0 z-30 bg-gradient-to-tr from-[#0f172a] via-[#7b2cbf] to-[#21d4fd]" // Cyberpunk gradient
           />
         )}
       </AnimatePresence>
 
-      {/* Persistent Background AFTER Transition Completes */}
+      {/* ✅ Persistent Background AFTER Transition Completes */}
       {backgroundActive && (
-        <div className="fixed inset-0 bg-black -z-10" />
+        <div className="fixed inset-0 z-10 bg-gradient-to-tr from-[#0f172a] via-[#7b2cbf] to-[#21d4fd]" />
       )}
 
-      {/* Content (hidden until transition finishes to prevent blinking) */}
-      <div className={`${isTransitioning ? "opacity-0" : "opacity-100"} transition-opacity duration-500`}>
+      {/* ✅ Ensure Page Content is Visible After Transition */}
+      <div className={`relative z-20 transition-opacity duration-500 ${isTransitioning ? "opacity-0" : "opacity-100"}`}>
         {children}
       </div>
     </div>

@@ -2,15 +2,12 @@
 
 import "./globals.css";
 import Layout from "@/components/Layout";
-import PageTransition from "@/components/PageTransition";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full bg-teal-500/10">
-      <body className="h-full min-h-screen text-white">
-        <PageTransition>
-          <Layout>{children}</Layout>
-        </PageTransition>
+    <html lang="en" className="h-full bg-teal-500/50">
+      <body className="h-full text-white">
+        <Layout>{children}</Layout>
       </body>
     </html>
   );
