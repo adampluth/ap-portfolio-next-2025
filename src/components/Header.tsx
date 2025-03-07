@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 const links = [
   { href: "/ui-ux", label: "Development & UI/UX" },
   { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
