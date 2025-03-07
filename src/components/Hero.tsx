@@ -64,12 +64,12 @@ export default function Hero() {
           className="flex flex-wrap justify-center gap-4 mt-4"
         >
           <Link href="/ui-ux">
-            <button className="px-6 py-3 text-lg font-medium btn btn-md glass bg-teal-700/60 rounded-lg transition hover:bg-teal-600/80">
+            <button className="px-6 py-3 text-lg font-medium btn btn-md glass !shadow-lg text-white bg-teal-700/60 rounded-lg transition hover:bg-teal-600/80">
               Portfolio
             </button>
           </Link>
           <Link href="/about">
-            <button className="px-6 py-3 text-lg font-medium btn btn-md glass bg-teal-700/60 rounded-lg transition hover:bg-teal-600/80">
+            <button className="px-6 py-3 text-lg font-medium btn btn-md glass !shadow-lg text-white bg-teal-700/60 rounded-lg transition hover:bg-teal-600/80">
               About Me
             </button>
           </Link>
@@ -77,14 +77,14 @@ export default function Hero() {
             {/* GitHub Button */}
             <a href="https://github.com/adampluth" target="_blank" rel="noopener noreferrer">
               <button className="btn btn-circle btn-md glass bg-teal-700/60 hover:bg-teal-700/50 active:bg-teal-700/40 transition">
-                <FaGithub className="w-6 h-6 text-white" />
+                <FaGithub className="w-6 h-6 text-white !shadow-lg" />
               </button>
             </a>
 
             {/* LinkedIn Button */}
             <a href="https://www.linkedin.com/in/adampluth/" target="_blank" rel="noopener noreferrer">
               <button className="btn btn-circle btn-md glass bg-blue-600/60 hover:bg-blue-600/50 active:bg-blue-600/40 transition">
-                <FaLinkedin className="w-6 h-6 text-white" />
+                <FaLinkedin className="w-6 h-6 text-white !shadow-lg" />
               </button>
             </a>
           </div>
