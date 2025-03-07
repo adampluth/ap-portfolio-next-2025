@@ -190,7 +190,7 @@ export default function AboutPage() {
                   hover:bg-teal-600/80
                 "
               >
-                About Me
+                My Resume
               </button>
             </Link>
 
