@@ -53,7 +53,7 @@ export default function Hero() {
             alt="My Logo" 
             width={220} 
             height={220} 
-            className="w-48 md:w-60"
+            className="w-32 md:w-48 lg:w-60 pt-6 md:pt-0"
           />
         </motion.div>
 
@@ -74,11 +74,12 @@ export default function Hero() {
           }}
           className="
             relative 
-            text-5xl 
+            text-3xl
             md:text-5xl 
             font-extrabold 
             text-center 
             leading-tight
+            px-2
           "
         >
           {/* Diffused Glow Background */}
@@ -123,10 +124,21 @@ export default function Hero() {
             md:text-xl 
             text-gray-300 
             max-w-[700px]
+            px-2
           "
         >
-          Front-End Architect | Senior Software Engineer | Digital Twins <br />
-          OT/ICS Cybersecurity | UI/UX & Data Visualization
+          {/* Mobile Version (breaks into two lines differently) */}
+          <span className="block sm:hidden">
+            Front-End Architect | Senior Software Engineer <br />
+            Digital Twins | OT/ICS Cybersecurity <br />
+            UI/UX & Data Visualization
+          </span>
+
+          {/* Desktop Version (default format) */}
+          <span className="hidden sm:block">
+            Front-End Architect | Senior Software Engineer | Digital Twins <br />
+            OT/ICS Cybersecurity | UI/UX & Data Visualization
+          </span>
         </motion.p>
 
         {/* CTA Buttons */}
