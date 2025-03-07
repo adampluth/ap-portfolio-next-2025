@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function Hero() {
   return (
@@ -53,20 +54,30 @@ export default function Hero() {
           className="flex flex-wrap justify-center gap-4 mt-4"
         >
           <Link href="/ui-ux">
-            <button className="px-6 py-3 text-lg font-medium text-black bg-white rounded-lg transition hover:bg-gray-200">
-              UI/UX Work
+            <button className="px-6 py-3 text-lg font-medium btn btn-md glass bg-teal-700/60 rounded-lg transition hover:bg-gray-200">
+              Portfolio
             </button>
           </Link>
           <Link href="/about">
-            <button className="px-6 py-3 text-lg font-medium text-black bg-white rounded-lg transition hover:bg-gray-200">
+            <button className="px-6 py-3 text-lg font-medium btn btn-md glass bg-teal-700/60 rounded-lg transition hover:bg-gray-200">
               About Me
             </button>
           </Link>
-          <a href="https://github.com/yourgithub" target="_blank" rel="noopener noreferrer">
-            <button className="px-6 py-3 text-lg font-medium text-black bg-white rounded-lg transition hover:bg-gray-200">
-              GitHub
-            </button>
-          </a>
+          <div className="flex space-x-4">
+            {/* GitHub Button */}
+            <a href="https://github.com/adampluth" target="_blank" rel="noopener noreferrer">
+              <button className="btn btn-circle btn-md glass bg-teal-700/60 hover:bg-teal-700/50 active:bg-teal-700/40 transition">
+                <FaGithub className="w-6 h-6 text-white" />
+              </button>
+            </a>
+
+            {/* LinkedIn Button */}
+            <a href="https://www.linkedin.com/in/adampluth/" target="_blank" rel="noopener noreferrer">
+              <button className="btn btn-circle btn-md glass bg-blue-600/60 hover:bg-blue-600/50 active:bg-blue-600/40 transition">
+                <FaLinkedin className="w-6 h-6 text-white" />
+              </button>
+            </a>
+          </div>
         </motion.div>
       </div>
     </div>
