@@ -162,6 +162,23 @@ export default function ContactPage() {
         </span>
       </motion.h1>
 
+      {/* Subtext */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+        className="
+          mt-4 
+          max-w-2xl 
+          text-lg 
+          md:text-xl 
+          text-gray-300 
+          leading-relaxed
+        "
+      >
+        {"Let's"} collaborate! Whether you have a project in mind, want to discuss UI/UX, or just say hi—reach out. This is a brand new site, so if this page is a work in pogress. If the form {"isn't"} working yet, reach out to me at: <br /> <strong>adam.pluth@gmail.com</strong>.
+      </motion.p>
+
       {/* Contact Form */}
       <motion.form
         onSubmit={handleSubmit}
