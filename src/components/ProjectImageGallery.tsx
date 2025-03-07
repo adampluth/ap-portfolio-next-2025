@@ -1,4 +1,4 @@
-"use client"; // ✅ Must be a Client Component to use useState
+"use client";
 
 import { useState } from "react";
 import NextImage from "next/image";
@@ -34,7 +34,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
         </div>
       )}
 
-      {/* Additional Images */}
+      {/* Masonry Layout for Additional Images */}
       <div className="masonry sm:masonry-sm md:masonry-md gap-y-2">
         {images.slice(1).map((img, index) => (
           <div key={index} className="cursor-pointer mb-6" onClick={() => {

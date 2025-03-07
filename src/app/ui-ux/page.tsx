@@ -2,11 +2,11 @@
 
 import React from "react";
 import ThumbGallery from "@/components/ThumbGallery";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export default function UIUXPage() {
   return (
-    <div className="ui-ux max-w-6xl mx-auto p-6 z-70">
+    <div className="ui-ux max-w-6xl mx-auto p-6">
       <motion.h1 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
