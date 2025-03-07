@@ -53,7 +53,7 @@ export default function Hero() {
             alt="My Logo" 
             width={220} 
             height={220} 
-            className="w-32 md:w-48 lg:w-60 pt-6 md:pt-0"
+            className="w-36 md:w-48 lg:w-60 pt-6 md:pt-0"
           />
         </motion.div>
 
