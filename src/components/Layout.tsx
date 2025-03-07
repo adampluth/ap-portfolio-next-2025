@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="relative h-full min-h-screen text-white">
+    <div className="relative h-full min-h-screen text-white overflow-hidden">
       {/* Only show SwirlBackground on the front page */}
       {pathname === "/" && (
         <div className="fixed inset-0 -z-10 w-full h-full">
