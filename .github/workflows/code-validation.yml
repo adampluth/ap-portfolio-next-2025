@@ -1,13 +1,11 @@
-name: Code Validation
+name: Code Validation & Auto-Merge
 
 on:
   push:
     branches:
-      - main
       - dev
   pull_request:
     branches:
-      - main
       - dev
 
 jobs:
@@ -39,6 +37,7 @@ jobs:
 
   type-check:
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -89,3 +88,23 @@ jobs:
 
       - name: Build Project
         run: npm run build
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/dev' && !contains(github.event.head_commit.message, '[no-auto-merge]')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Merge dev into main
+        run: |
+          git fetch origin main
+          git checkout main
+          git merge dev --no-ff --commit -m "Auto-merged dev into main"
+          git push origin main
