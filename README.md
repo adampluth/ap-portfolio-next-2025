@@ -3,15 +3,15 @@
 A **modern, responsive portfolio website** showcasing my work in **Visualization Science, Front-End Architecture, and Digital Twin Analytics**.  
 This site is built using **Next.js, TailwindCSS, and AWS Amplify** and includes interactive elements and a **secure contact form with reCAPTCHA validation**.
 
-## 🚀 Features
-- **⚡ Fast & Scalable** – Powered by **Next.js** with optimized routing.
-- **🎨 Modern UI/UX** – Styled with **TailwindCSS + DaisyUI** for a sleek and customizable design.
-- **📡 Hosted on AWS Amplify** – Integrated with **CloudFront** for fast global content delivery.
-- **📬 Secure Contact Form** – Uses **Google reCAPTCHA v3** and **Formspree (temporary)** to prevent spam.
+## Features
+- **Fast & Scalable** – Powered by **Next.js** with optimized routing.
+- **Modern UI/UX** – Styled with **TailwindCSS + DaisyUI** for a sleek and customizable design.
+- **Hosted on AWS Amplify** – Integrated with **CloudFront** for fast global content delivery.
+- **Secure Contact Form** – Uses **Google reCAPTCHA v3** and **Formspree (temporary)** to prevent spam.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 ```
 /src
  ├── app
@@ -26,7 +26,7 @@ This site is built using **Next.js, TailwindCSS, and AWS Amplify** and includes 
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 | Category             | Technology Used                                      |
 |----------------------|------------------------------------------------------|
 | **Frontend**        | Next.js, React, TypeScript                           |
@@ -36,7 +36,7 @@ This site is built using **Next.js, TailwindCSS, and AWS Amplify** and includes 
 
 ---
 
-## 🔧 Installation & Setup
+## Installation & Setup
 ### 1️⃣ **Clone the Repository**
 ```sh
 git clone https://github.com/adampluth/ap-portfolio-next-2025.git
@@ -63,17 +63,17 @@ Then visit **`http://localhost:3000`** in your browser.
 
 ---
 
-## 🚀 Deployment
+## Deployment
 This project is **auto-deployed to AWS Amplify** using GitHub Actions.  
 
-**✅ Steps for Deployment:**
+**Steps for Deployment:**
 1. **Push changes to the `main` branch** → Amplify automatically rebuilds & deploys.
 2. **CloudFront CDN updates** for fast global delivery.
 3. **Environment Variables** are stored in AWS Amplify.
 
 ---
 
-## 🔒 Security & Optimization
+## Security & Optimization
 - **reCAPTCHA v3** prevents spam in the contact form.
 - **Server-side API routes** handle reCAPTCHA validation (avoids CORS issues).
 - **Amplify + CloudFront** ensures fast, reliable content delivery.
@@ -81,18 +81,12 @@ This project is **auto-deployed to AWS Amplify** using GitHub Actions.
 
 ---
 
-## 📬 Contact & Feedback
+## Contact & Feedback
 Want to collaborate or have feedback?  
 Reach out via the **[contact form](https://your-portfolio-site.com/contact)** or connect on **[LinkedIn](https://linkedin.com/in/yourprofile)**.
 
 ---
 
-## 🎯 Future Plans
+## Future Plans
 ✔ **Replace Formspree with a custom backend (Express + SQL or AWS Lambda).**  
 ✔ **Enhance UI with more animations and interactive elements.**  
-
----
-
-## 📜 License
-This project is licensed under the **MIT License**. Feel free to use and modify it.
-
