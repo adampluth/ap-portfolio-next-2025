@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY!;
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrbpzanq";
 
 export async function POST(req: Request) {
@@ -11,6 +11,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Missing reCAPTCHA token" }, { status: 400 });
     }
 
+    if (!RECAPTCHA_SECRET_KEY) {
+      console.error("RECAPTCHA_SECRET_KEY is missing in environment variables.");
+      return NextResponse.json({ success: false, message: "Server misconfiguration" }, { status: 500 });
+    }
+
     // Verify reCAPTCHA token with Google
     const verificationURL = "https://www.google.com/recaptcha/api/siteverify";
     
@@ -18,24 +23,32 @@ export async function POST(req: Request) {
     params.append("secret", RECAPTCHA_SECRET_KEY);
     params.append("response", token);
 
-    const recaptchaResponse = await fetch(verificationURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params,
-    });
+    let recaptchaResponse;
+    try {
+      recaptchaResponse = await fetch(verificationURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params,
+      });
+    } catch (error) {
+      console.error("Failed to reach Google reCAPTCHA API:", error);
+      return NextResponse.json({ success: false, message: "reCAPTCHA verification error" }, { status: 500 });
+    }
 
     const recaptchaData = await recaptchaResponse.json();
-    console.log("reCAPTCHA Response:", recaptchaData); // Debugging
+    console.log("🔍 reCAPTCHA Response:", recaptchaData); // Debugging
 
     if (!recaptchaData.success) {
+      console.error("reCAPTCHA failed:", recaptchaData);
       return NextResponse.json(
         { success: false, message: "Invalid reCAPTCHA token", details: recaptchaData },
         { status: 400 }
       );
     }
 
-    // Check score
+    // Check score for v3
     if (recaptchaData.score !== undefined && recaptchaData.score < 0.5) {
+      console.warn("⚠️ reCAPTCHA score too low, request flagged as suspicious:", recaptchaData.score);
       return NextResponse.json(
         { success: false, message: "reCAPTCHA score too low, request flagged as suspicious" },
         { status: 400 }
@@ -43,18 +56,25 @@ export async function POST(req: Request) {
     }
 
     // Forward the form data to Formspree
-    const formspreeResponse = await fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        message: formData.message,
-        "g-recaptcha-response": token, // Attach verified token
-      }),
-    });
+    let formspreeResponse;
+    try {
+      formspreeResponse = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          "g-recaptcha-response": token, // Attach verified token
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to reach Formspree:", error);
+      return NextResponse.json({ success: false, message: "Formspree submission error" }, { status: 500 });
+    }
 
     if (!formspreeResponse.ok) {
+      console.error("Formspree API error:", await formspreeResponse.text());
       return NextResponse.json({ success: false, message: "Form submission failed" }, { status: 500 });
     }
 

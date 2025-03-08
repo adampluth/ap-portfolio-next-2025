@@ -30,12 +30,19 @@ export default function ContactPage() {
 
   // Ensure reCAPTCHA script is loaded before executing it
   useEffect(() => {
-    if (typeof window !== "undefined" && window.grecaptcha) {
-      window.grecaptcha.ready(() => {
-        setRecaptchaReady(true);
-      });
+    if (typeof window !== "undefined") {
+      const interval = setInterval(() => {
+        if (window.grecaptcha) {
+          window.grecaptcha.ready(() => {
+            setRecaptchaReady(true);
+          });
+          clearInterval(interval);
+        }
+      }, 500); // Check every 500ms
+  
+      return () => clearInterval(interval);
     }
-  }, []);
+  }, []);  
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -212,7 +219,7 @@ export default function ContactPage() {
         "
       >
         {"Let's"} collaborate! Whether you have a project in mind, 
-        want to discuss UI/UX, or just say hi—reach out.
+        want to discuss anything, or just say hi—reach out.
       </motion.p>
 
       {/* Contact Form */}
