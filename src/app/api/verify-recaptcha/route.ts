@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY!; // Keep this SECRET in .env.local
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY!;
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrbpzanq";
 
 export async function POST(req: Request) {
   try {
@@ -11,18 +12,37 @@ export async function POST(req: Request) {
     }
 
     // Verify reCAPTCHA token with Google
-    const verificationURL = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${token}`;
+    const verificationURL = "https://www.google.com/recaptcha/api/siteverify";
+    
+    const params = new URLSearchParams();
+    params.append("secret", RECAPTCHA_SECRET_KEY);
+    params.append("response", token);
 
-    const recaptchaResponse = await fetch(verificationURL, { method: "POST" });
+    const recaptchaResponse = await fetch(verificationURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
+    });
+
     const recaptchaData = await recaptchaResponse.json();
+    console.log("reCAPTCHA Response:", recaptchaData); // Debugging
 
     if (!recaptchaData.success) {
-      return NextResponse.json({ success: false, message: "Invalid reCAPTCHA token" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Invalid reCAPTCHA token", details: recaptchaData },
+        { status: 400 }
+      );
     }
 
-    // If reCAPTCHA is valid, forward the form data to Formspree
-    const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrbpzanq";
+    // Check score
+    if (recaptchaData.score !== undefined && recaptchaData.score < 0.5) {
+      return NextResponse.json(
+        { success: false, message: "reCAPTCHA score too low, request flagged as suspicious" },
+        { status: 400 }
+      );
+    }
 
+    // Forward the form data to Formspree
     const formspreeResponse = await fetch(FORMSPREE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -39,6 +59,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true, message: "Message sent successfully" }, { status: 200 });
+
   } catch (error) {
     console.error("Server Error:", error);
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
