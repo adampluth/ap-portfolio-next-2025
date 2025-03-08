@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Website
 
-## Getting Started
+A **modern, responsive portfolio website** showcasing my work in **Visualization Science, Front-End Architecture, and Digital Twin Analytics**.  
+This site is built using **Next.js, TailwindCSS, and AWS Amplify** and includes interactive elements and a **secure contact form with reCAPTCHA validation**.
 
-First, run the development server:
+## 🚀 Features
+- **⚡ Fast & Scalable** – Powered by **Next.js** with optimized routing.
+- **🎨 Modern UI/UX** – Styled with **TailwindCSS + DaisyUI** for a sleek and customizable design.
+- **📡 Hosted on AWS Amplify** – Integrated with **CloudFront** for fast global content delivery.
+- **📬 Secure Contact Form** – Uses **Google reCAPTCHA v3** and **Formspree (temporary)** to prevent spam.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 📂 Project Structure
+```
+/src
+ ├── app
+ │   ├── contact  # Contact form page with reCAPTCHA
+ │   ├── projects # Portfolio projects section
+ │   ├── api      # API routes (e.g., reCAPTCHA validation)
+ │   ├── layout   # Global layout components
+ │   ├── components
+ │   │   ├── ContactForm.tsx   # Contact form with validation
+ │   │   ├── Header.tsx        # Navigation bar
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Tech Stack
+| Category             | Technology Used                                      |
+|----------------------|------------------------------------------------------|
+| **Frontend**        | Next.js, React, TypeScript                           |
+| **Styling**         | TailwindCSS, DaisyUI, Lucide Icons                   |
+| **Forms & API**     | Formspree (temporary), Google reCAPTCHA v3           |
+| **Hosting & Infra** | AWS Amplify, CloudFront, GitHub Actions (CI/CD)      |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔧 Installation & Setup
+### 1️⃣ **Clone the Repository**
+```sh
+git clone https://github.com/adampluth/ap-portfolio-next-2025.git
+cd ap-portfolio-next-2025
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2️⃣ **Install Dependencies**
+```sh
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3️⃣ **Set Up Environment Variables**
+Create a `.env.local` file in the root directory and add:
+```
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your-site-key
+NEXT_PUBLIC_RECAPTCHA_SECRET_KEY=your-secret-key
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4️⃣ **Run Locally**
+```sh
+npm run dev
+```
+Then visit **`http://localhost:3000`** in your browser.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Deployment
+This project is **auto-deployed to AWS Amplify** using GitHub Actions.  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**✅ Steps for Deployment:**
+1. **Push changes to the `main` branch** → Amplify automatically rebuilds & deploys.
+2. **CloudFront CDN updates** for fast global delivery.
+3. **Environment Variables** are stored in AWS Amplify.
+
+---
+
+## 🔒 Security & Optimization
+- **reCAPTCHA v3** prevents spam in the contact form.
+- **Server-side API routes** handle reCAPTCHA validation (avoids CORS issues).
+- **Amplify + CloudFront** ensures fast, reliable content delivery.
+- **CI/CD with GitHub Actions** automates deployment.
+
+---
+
+## 📬 Contact & Feedback
+Want to collaborate or have feedback?  
+Reach out via the **[contact form](https://your-portfolio-site.com/contact)** or connect on **[LinkedIn](https://linkedin.com/in/yourprofile)**.
+
+---
+
+## 🎯 Future Plans
+✔ **Replace Formspree with a custom backend (Express + SQL or AWS Lambda).**  
+✔ **Enhance UI with more animations and interactive elements.**  
+
+---
+
+## 📜 License
+This project is licensed under the **MIT License**. Feel free to use and modify it.
+
