@@ -1,57 +1,94 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useReCaptcha } from "next-recaptcha-v3";
+
+declare global {
+  interface Window {
+    grecaptcha?: {
+      ready: (cb: () => void) => void;
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+    };
+  }
+}
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [toastMessage, setToastMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
-  const { executeRecaptcha } = useReCaptcha();
+  const [formData, setFormData] = useState({ 
+    name: "", 
+    email: "", 
+    message: "" 
+  });
 
-  // Handle Form Input Changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const [toastMessage, setToastMessage] = useState<{
+    type: "success" | "error"; 
+    message: string;
+  } | null>(null);
+
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
+
+  const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
+
+  // Ensure reCAPTCHA script is loaded before executing it
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.grecaptcha) {
+      window.grecaptcha.ready(() => {
+        setRecaptchaReady(true);
+      });
+    }
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!executeRecaptcha) {
-      console.error("reCAPTCHA is not ready.");
-      setToastMessage({ type: "error", message: "reCAPTCHA is not loaded. Please try again." });
+    if (!recaptchaReady) {
+      setToastMessage({
+        type: "error",
+        message: "reCAPTCHA not ready. Try again.",
+      });
       return;
     }
 
     try {
-      const recaptchaToken = await executeRecaptcha("contact_form");
+      // Ensure reCAPTCHA is available before executing
+      if (!window.grecaptcha) {
+        throw new Error("reCAPTCHA is not available. Please refresh the page.");
+      }
 
-      console.log("reCAPTCHA Token:", recaptchaToken);
-
-      const res = await fetch("https://formspree.io/f/xrbpzanq", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          "g-recaptcha-response": recaptchaToken, // Add reCAPTCHA token to submission
-        }),
+      const token = await window.grecaptcha?.execute(RECAPTCHA_SITE_KEY, {
+        action: "submit",
       });
 
-      if (res.ok) {
-        setToastMessage({ type: "success", message: "Your message has been sent!" });
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        setToastMessage({ type: "error", message: "Error sending message. Try again later." });
+      if (!token) {
+        throw new Error("Failed to generate reCAPTCHA token.");
       }
+
+      // Send form data + reCAPTCHA token to Next.js API route
+      const response = await fetch("/api/verify-recaptcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, formData }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setToastMessage({ type: "error", message: "reCAPTCHA verification failed." });
+        return;
+      }
+
+      setToastMessage({ type: "success", message: "Your message has been sent!" });
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       console.error("Error:", error);
       setToastMessage({ type: "error", message: "Something went wrong." });
     }
 
-    // Auto-hide toast after 10 seconds
     setTimeout(() => setToastMessage(null), 10000);
   };
 
@@ -69,7 +106,13 @@ export default function ContactPage() {
         relative
       "
     >
-      
+      {/* Inject reCAPTCHA script */}
+      <script 
+        src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`} 
+        async 
+        defer
+      ></script>
+
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -89,19 +132,19 @@ export default function ContactPage() {
                 py-3 
                 text-lg 
                 font-medium 
-                rounded-lg
-                text-white
-                text-shadow
-                backdrop-blur-md
+                rounded-lg 
+                text-white 
+                text-shadow 
+                backdrop-blur-md 
                 bg-opacity-80 
                 border 
                 border-white/20
               "
               style={{
-                backgroundColor: toastMessage.type === "success" ? "#22C55E" : "#EF4444",
+                backgroundColor: toastMessage?.type === "success" ? "#22C55E" : "#EF4444",
               }}
             >
-              <span>{toastMessage.message}</span>
+              <span>{toastMessage?.message}</span>
             </div>
           </motion.div>
         )}
@@ -115,12 +158,7 @@ export default function ContactPage() {
         transition={{
           duration: 1.2,
           ease: "easeOut",
-          scale: {
-            duration: 3.5,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          },
+          scale: { duration: 3.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" },
         }}
         className="
           relative 
@@ -130,7 +168,6 @@ export default function ContactPage() {
           text-center
         "
       >
-        {/* Diffused Glow */}
         <span 
           className="
             absolute 
@@ -142,10 +179,8 @@ export default function ContactPage() {
             from-purple-500 
             via-pink-500 
             to-cyan-400
-          "
+          " 
         />
-
-        {/* Main Gradient Text */}
         <span 
           className="
             relative 
@@ -162,7 +197,7 @@ export default function ContactPage() {
         </span>
       </motion.h1>
 
-      {/* Subtext */}
+      {/* Blurb */}
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -176,7 +211,8 @@ export default function ContactPage() {
           leading-relaxed
         "
       >
-        {"Let's"} collaborate! Whether you have a project in mind, want to discuss UI/UX, or just say hi—reach out. This is a brand new site, so if this page is a work in pogress. If the form {"isn't"} working yet, reach out to me at: <br /> <strong>adam.pluth@gmail.com</strong>.
+        {"Let's"} collaborate! Whether you have a project in mind, 
+        want to discuss UI/UX, or just say hi—reach out.
       </motion.p>
 
       {/* Contact Form */}
@@ -199,7 +235,6 @@ export default function ContactPage() {
           border-cyan-500/30
         "
       >
-        {/* Input Fields */}
         <input
           type="text"
           name="name"
@@ -262,8 +297,8 @@ export default function ContactPage() {
           onChange={handleChange}
         />
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="
             px-6 
             py-3 
